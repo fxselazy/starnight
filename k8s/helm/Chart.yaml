@@ -1,0 +1,11 @@
+apiVersion: v1
+description: Vanilasky Helm Chart
+name: vanilasky
+version: 1.0.0
+appVersion: 1.0.0
+home: https://iternship.net
+maintainers:
+  - name: nirafxse
+    email: nirawat.fuse@mail.kmutt.ac.th
+sources:
+  - https://github.com/fxselazy/vanilasky

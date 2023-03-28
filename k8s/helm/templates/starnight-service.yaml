@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.starnight.namespace }}
+spec:
+  type: {{ .Values.ingress.serviceType }}
+  ports:
+  - port: {{ .Values.starnight.port }}
+  selector:
+    app: {{ .Release.Name }}
