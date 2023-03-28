@@ -1,0 +1,24 @@
+starnight:
+  namespace: vanilasky-dev
+  image: slezzlazy/starnight
+  tag: v1
+  replicas: 1
+  imagePullSecrets: docker-registry
+  port: 3000
+  # healthCheckPath: "/health"
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  host: api.iternship.net
+  path: "/"
+  serviceType: ClusterIP
+hpa:
+  enabled: false
+  maxReplicas: 2
+  # average total CPU usage per pod (1-100)
+  cpu: 80
+  # average memory usage per pod (100Mi-1Gi)
+  memory: 500Mi
+  # average http requests per second per pod (k8s-prometheus-adapter)
+  requests:
