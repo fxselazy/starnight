@@ -2,9 +2,11 @@ FROM node:16.6.0
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+# COPY package*.json ./
 
-COPY . .
+COPY starnight/. .
+
+RUN ls -la
 
 RUN npm install
 
