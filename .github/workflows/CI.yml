@@ -1,0 +1,37 @@
+name: CI
+on:
+  push:
+    branches:
+      - minikube
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+#       - name: Checkout code
+#         run: git clone -b dev https://github.com/${{ github.actor }}/starnight.git
+      - name: Change to app directory & Update Repo
+        run: |
+          cd starnight
+          git pull 
+          git checkout minikube
+          ls -la
+      - name: Set env
+        run: |
+          echo "ENV_NAME=$( [ "$GITHUB_REF" == "refs/heads/master" ] && echo 'uat' || echo ${GITHUB_REF##*/} )" >> $GITHUB_ENV
+      - name: Docker login
+        run: docker login  -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Build Docker image
+        run : docker build . --file starnight/Dockerfile --tag ${{ secrets.DOCKER_HUB_USERNAME }}/starnight:${{ env.ENV_NAME }}_${GITHUB_SHA::6}
+      - name: Push Docker image
+        run : docker push ${{ secrets.DOCKER_HUB_USERNAME }}/vanilasky:${{ env.ENV_NAME }}_${GITHUB_SHA::6}
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+  deploy:
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: check files
+        run: ls -la ./starnight/ 
+      - name: deploy app with helm chart
+        run: helm upgrade --install -f starnight/k8s/helm-values/values-starnight-dev.yaml starnight-service starnight/k8s/helm/ --set image=${{ secrets.DOCKER_HUB_USERNAME }}/starnight:${{ env.ENV_NAME }}_${GITHUB_SHA::6}
+  
