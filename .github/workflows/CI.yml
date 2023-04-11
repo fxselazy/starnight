@@ -23,7 +23,7 @@ jobs:
       - name: Build Docker image
         run : docker build . --file starnight/Dockerfile --tag ${{ secrets.DOCKER_HUB_USERNAME }}/starnight:${{ env.ENV_NAME }}_${GITHUB_SHA::6}
       - name: Push Docker image
-        run : docker push ${{ secrets.DOCKER_HUB_USERNAME }}/vanilasky:${{ env.ENV_NAME }}_${GITHUB_SHA::6}
+        run : docker push ${{ secrets.DOCKER_HUB_USERNAME }}/starnight:${{ env.ENV_NAME }}_${GITHUB_SHA::6}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
   deploy:
